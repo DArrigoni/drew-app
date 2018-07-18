@@ -1,0 +1,12 @@
+{
+  "name": "drew",
+  "version": "1.0.0",
+  "description": "Drew App",
+  "dependencies": {
+    "local-web-server": "^2.5.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "drew-web-client-test": "ws -d ./drew-web-client/dist/ --spa index.html --rewrite '/api/* -> http://localhost:8001/api/$1'"
+  }
+}

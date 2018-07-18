@@ -1,0 +1,6 @@
+[submodule "drew-web-client"]
+	path = drew-web-client
+	url = git@github.com:DArrigoni/drew-web-client.git
+[submodule "drew-server"]
+	path = drew-server
+	url = git@github.com:DArrigoni/drew-server.git
