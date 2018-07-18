@@ -23,7 +23,14 @@ check_stale_pid('server.pid')
 check_stale_pid('client.pid')
 
 unless File.exists? './drew-web-client/dist/index.html'
-  `npm run build --prefix ./drew-web-client/`
+  print 'Building drew-web-client... '
+  result = system('npm run build --prefix ./drew-web-client/', out: 'test.out', err: 'test.out')
+  if result
+    puts 'Success'
+  else
+    puts 'Failed (check test.out for more info)'
+    exit
+  end
 end
 
 @__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001", out: "test.out")
