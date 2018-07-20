@@ -62,7 +62,7 @@ jobs:
             - v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
             - v1-server-dependencies-
       - run:
-          command: bundle install --jobs=4 --retry=3 vendor/bundle
+          command: bundle install --jobs=4 --retry=3 --path vendor/bundle
           working_directory: ~/repo/drew-server
       - save_cache:
           paths:
