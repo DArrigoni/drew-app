@@ -57,25 +57,24 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
-  web-client:
-    docker:
-      - image: circleci/ruby:2.5.1-node-browsers
-    steps:
-      - run: echo 'Coming soon!'
-  integration:
-    docker:
-      - image: circleci/ruby:2:5:1-node-browsers
-    steps:
-      - run: echo 'Coming soon!'
-    
+#  web-client:
+#    docker:
+#      - image: circleci/ruby:2.5.1-node-browsers
+#    steps:
+#      - run: echo 'Coming soon!'
+#  integration:
+#    docker:
+#      - image: circleci/ruby:2:5:1-node-browsers
+#    steps:
+#      - run: echo 'Coming soon!'
 workflows:
   version: 2
   main: 
     jobs:
-      - server
-      - web-client
-      - integration:
-        requires:
-          - server
-          - web-client
+#      - server
+#      - web-client
+#      - integration:
+#        requires:
+#          - server
+#          - web-client
 
