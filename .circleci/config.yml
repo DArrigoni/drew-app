@@ -31,7 +31,7 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: drew-app_test
-    working_directory: ~/repo/drew-server
+    working_directory: ~/repo
 
     steps:
       - checkout:
