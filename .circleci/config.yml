@@ -62,8 +62,8 @@ jobs:
             - v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
             - v1-server-dependencies-
       - run:
-        command: bundle install --jobs=4 --retry=3 vendor/bundle
-        working_directory: ~/repo/drew-server
+          command: bundle install --jobs=4 --retry=3 vendor/bundle
+          working_directory: ~/repo/drew-server
       - save_cache:
           paths:
             - drew-server/vendor/bundle
@@ -75,8 +75,8 @@ jobs:
             - v1-web-client-dependencies-{{ checksum 'drew-web-client/package.json' }}
             - v1-web-client-dependencies-
       - run:
-        command: npm install
-        working_directory: ~/repo/drew-web-client
+          command: npm install
+          working_directory: ~/repo/drew-web-client
       - save_cache:
           paths:
             - drew-web-client/node_modules
