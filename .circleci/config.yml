@@ -79,9 +79,8 @@ jobs:
             - v1-web-client-dependencies-{{ checksum "drew-web-client/package.json" }}
             - v1-web-client-dependencies-
       - run:
-          command:
-            name: Web-Client dependencies
-            command: npm install
+          name: Web-Client dependencies
+          command: npm install
           working_directory: ~/repo/drew-web-client
       - save_cache:
           paths:
