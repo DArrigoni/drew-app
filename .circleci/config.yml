@@ -1,7 +1,20 @@
 # Ruby CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
-#
+
+docker_config: &docker_config
+  docker:
+    - image: circleci/ruby:2.5.1-node-browsers
+      environment:
+        RAILS_ENV: test
+        PGHOST: 127.0.0.1
+        PGUSER: root
+    - image: circleci/postgres:9.4
+      environment:
+        POSTGRES_USER: root
+        POSTGRES_DB: drew-app_test
+  
+
 version: 2
 workflows:
   version: 2
@@ -21,17 +34,7 @@ workflows:
             - server
 jobs:
   workspace:
-    docker:
-      - image: circleci/ruby:2.5.1-node-browsers
-        environment:
-          RAILS_ENV: test
-          PGHOST: 127.0.0.1
-          PGUSER: root
-      - image: circleci/postgres:9.4
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: drew-app_test
-
+    <<: *docker_config
     working_directory: ~/repo/drew-server
 
     steps:
@@ -44,100 +47,69 @@ jobs:
             git submodule sync
             git submodule update --init
 
-      # Gemfile
+      # Root Deps
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          - v1-dependencies-
-      - run:
-          name: install dependencies
-          command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
-      - save_cache:
-          paths:
-            - ./vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-
-      # NPM
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
+          - v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
+          - v1-root-dependencies-
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
       - run: npm install
       - save_cache:
           paths:
+            - vendor/bundle
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
+
+      # Server Deps
+      - restore_cache:
+          keys:
+            - v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
+            - v1-server-dependencies-
+      - run: 
+        command: bundle install --jobs=4 --retry=3 vendor/bundle
+        working_directory: ~/repo/drew-server
+      - save_cache:
+          paths: 
+            - drew-server/vendor/bundle
+          keys: v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
+      
+      # Web-Client Deps
+      - restore_cache:
+          keys:
+            - v1-web-client-dependencies-{{ checksum 'drew-web-client/package.json' }}
+            - v1-web-client-dependencies-
+      - run:
+        command: npm install
+        working_directory: ~/repo/drew-web-client
+      - save_cache:
+          paths:
+            - drew-web-client/node_modules
+          keys: v1-web-client-dependencies-{{ checksum 'drew-web-client/package.json' }}
+
+      # Save it to the workspace
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - repo
+
   web-client:
-    docker:
-      - image: circleci/ruby:2.5.1-node-browsers
+    <<: &docker_config
     working_directory: ~/repo/drew-web-client
     steps:
-      - checkout:
-          path: ~/repo/
-      - run:
-          name: 'Sync Submodules'
-          working_directory: ~/repo/
-          command: |
-            git submodule sync
-            git submodule update --init
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
-      - run: npm install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+      - attach_workspace:
+          at: ~/repo/drew-web-client
       - run: npm run test:unit
 
   server:
-    docker:
-      - image: circleci/ruby:2.5.1-node-browsers
-        environment:
-          RAILS_ENV: test
-          PGHOST: 127.0.0.1
-          PGUSER: root
-      - image: circleci/postgres:9.4
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: drew-app_test
-
+    <<: &docker_config
     working_directory: ~/repo/drew-server
 
     steps:
-      - checkout:
-          path: ~/repo/
-      - run:
-          name: 'Sync Submodules'
-          working_directory: ~/repo/
-          command: |
-            git submodule sync
-            git submodule update --init
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run:
-          name: install dependencies
-          command: |
-            bundle install --jobs=4 --retry=3 --path vendor/bundle
-
-      - save_cache:
-          paths:
-            - ./vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-
+      - attach_workspace:
+          at: ~/repo/drew-server
       # Database setup
-      - run: pwd; bundle exec rake db:create
-      - run: pwd; bundle exec rake db:schema:load
-
-      # run tests!
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
       - run:
           name: run tests
           command: |
@@ -149,8 +121,6 @@ jobs:
                             --out /tmp/test-results/rspec.xml \
                             --format progress \
                             $TEST_FILES
-
-      # collect reports
       - store_test_results:
           path: /tmp/test-results
       - store_artifacts:
