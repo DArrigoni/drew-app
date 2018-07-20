@@ -48,8 +48,11 @@ jobs:
           keys:
           - v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
           - v1-root-dependencies-
-      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
-      - run: npm install
+      - run:
+          name: Root Dependeinces
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+            npm install
       - save_cache:
           paths:
             - vendor/bundle
@@ -59,28 +62,31 @@ jobs:
       # Server Deps
       - restore_cache:
           keys:
-            - v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
+            - v1-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
             - v1-server-dependencies-
       - run:
+          name: Server Dependencies
           command: bundle install --jobs=4 --retry=3 --path vendor/bundle
           working_directory: ~/repo/drew-server
       - save_cache:
           paths:
             - drew-server/vendor/bundle
-          key: v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
+          key: v1-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
 
       # Web-Client Deps
       - restore_cache:
           keys:
-            - v1-web-client-dependencies-{{ checksum 'drew-web-client/package.json' }}
+            - v1-web-client-dependencies-{{ checksum "drew-web-client/package.json" }}
             - v1-web-client-dependencies-
       - run:
-          command: npm install
+          command:
+            name: Web-Client dependencies
+            command: npm install
           working_directory: ~/repo/drew-web-client
       - save_cache:
           paths:
             - drew-web-client/node_modules
-          key: v1-web-client-dependencies-{{ checksum 'drew-web-client/package.json' }}
+          key: v1-web-client-dependencies-{{ checksum "drew-web-client/package.json" }}
 
       # Save it to the workspace
       - persist_to_workspace:
@@ -103,6 +109,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo/drew-web-client
+      - run: |
+          pwd
+          ls
+          ls ~/repo/drew-server
       - run: npm run test:unit
 
   server:
@@ -121,6 +131,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo/drew-server
+      - run: |
+          pwd
+          ls
+          ls ~/repo/drew-server
       # Database setup
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
