@@ -21,14 +21,14 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
-          environment:
-            RAILS_ENV: test
-            PGHOST: 127.0.0.1
-            PGUSER: root
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
       - image: circleci/postgres:9.4
-          environment:
-            POSTGRES_USER: root
-            POSTGRES_DB: drew-app_test
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: drew-app_test
 
     working_directory: ~/repo/drew-server
 
