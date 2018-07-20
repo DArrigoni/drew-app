@@ -18,7 +18,7 @@ jobs:
     steps:
       - run: echo 'Coming soon!'
 
-  build:
+  server:
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
         environment:
@@ -58,7 +58,7 @@ jobs:
           paths:
             - ./vendor/bundle
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-        
+
       # Database setup
       - run: pwd; bundle exec rake db:create
       - run: pwd; bundle exec rake db:schema:load
@@ -69,7 +69,7 @@ jobs:
           command: |
             mkdir /tmp/test-results
             TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
-            
+
             bundle exec rspec --format progress \
                             --format RspecJunitFormatter \
                             --out /tmp/test-results/rspec.xml \
