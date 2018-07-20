@@ -135,7 +135,7 @@ jobs:
           ls
           ls ~/repo/drew-server
       # Database setup
-      - run: bundle install # Should be there in vendor bundle?
+      - run: bundle install --path vendor/bundle # Should be there in vendor bundle?
       - run: bundle exec rake db:create
       - run: bundle exec rake db:schema:load
       - run:
