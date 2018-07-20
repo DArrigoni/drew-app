@@ -14,9 +14,26 @@ jobs:
   web-client:
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
-    working_directory: ~/repo/drew-server
+    working_directory: ~/repo/drew-web-client
     steps:
-      - run: echo 'Coming soon!'
+      - checkout:
+          path: ~/repo/
+      - run:
+          name: 'Sync Submodules'
+          working_directory: ~/repo/
+          command: |
+            git submodule sync
+            git submodule update --init
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: npm run test:unit
 
   server:
     docker:
