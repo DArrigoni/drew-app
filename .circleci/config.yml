@@ -130,14 +130,15 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: |
-          pwd
-          ls
-          ls ~/repo/drew-server
+
       # Database setup
-      - run: bundle install --path vendor/bundle # Should be there in vendor bundle?
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - run:
+          name: Prepare Database
+          command: |
+            bundle install --path vendor/bundle
+            bundle exec rake db:create db:schema:load
+
+      # Run and save tests
       - run:
           name: run tests
           command: |
@@ -168,4 +169,17 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - run: echo 'Coming soon!'
+      - attach_workspace:
+          at: ~/
+
+      # Database setup
+      - run:
+          name: Prepare Database
+          command: |
+            bundle install --path vendor/bundle
+            bundle exec rake db:create db:schema:load
+          working_director: ~/repo/drew-server
+
+      - run:
+          name: Integration tests
+          command: cucumber
