@@ -8,9 +8,66 @@ workflows:
 
   ci:
     jobs:
-      - web-client
-      - server
+      - workspace
+      - web-client:
+          requires:
+            - workspace
+      - server:
+          requires:
+            - workspace
+      - integration:
+          requires:
+            - web-client
+            - server
 jobs:
+  workspace:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: drew-app_test
+
+    working_directory: ~/repo/drew-server
+
+    steps:
+      - checkout:
+          path: ~/repo/
+      - run:
+          name: 'Sync Submodules'
+          working_directory: ~/repo/
+          command: |
+            git submodule sync
+            git submodule update --init
+
+      # Gemfile
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # NPM
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
   web-client:
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
