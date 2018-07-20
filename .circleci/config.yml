@@ -126,3 +126,10 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+  integration:
+    <<: &docker_config
+    working_directory: ~/repo
+
+    steps:
+      - run: echo 'Coming soon!'
+      # collect reports
