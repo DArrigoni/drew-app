@@ -14,22 +14,33 @@ jobs:
   web-client:
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
-    working_directory: ~/repo/drew-web-client
+    working_directory: ~/repo/drew-server
     steps:
       - run: echo 'Coming soon!'
 
-  server:
+  build:
     docker:
       - image: circleci/ruby:2.5.1-node-browsers
+          environment:
+            RAILS_ENV: test
+            PGHOST: 127.0.0.1
+            PGUSER: root
       - image: circleci/postgres:9.4
+          environment:
+            POSTGRES_USER: root
+            POSTGRES_DB: drew-app_test
 
     working_directory: ~/repo/drew-server
 
     steps:
-      - checkout
-      - run: git submodule sync
-      - run: git submodule update --init
-
+      - checkout:
+          path: ~/repo/
+      - run:
+          name: 'Sync Submodules'
+          working_directory: ~/repo/
+          command: |
+            git submodule sync
+            git submodule update --init
 
       # Download and cache dependencies
       - restore_cache:
@@ -49,8 +60,8 @@ jobs:
           key: v1-dependencies-{{ checksum "Gemfile.lock" }}
         
       # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - run: pwd; bundle exec rake db:create
+      - run: pwd; bundle exec rake db:schema:load
 
       # run tests!
       - run:
