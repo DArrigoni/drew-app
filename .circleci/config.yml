@@ -107,7 +107,7 @@ jobs:
     working_directory: ~/repo/drew-web-client
     steps:
       - attach_workspace:
-          at: ~/repo/drew-web-client
+          at: ~/
       - run: |
           pwd
           ls
@@ -129,7 +129,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: ~/repo/drew-server
+          at: ~/
       - run: |
           pwd
           ls
