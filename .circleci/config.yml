@@ -178,7 +178,7 @@ jobs:
           command: |
             bundle install --path vendor/bundle
             bundle exec rake db:create db:schema:load
-          working_director: ~/repo/drew-server
+          working_directory: ~/repo/drew-server
 
       - run:
           name: Integration tests
