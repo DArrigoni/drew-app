@@ -33,7 +33,7 @@ unless File.exists? './drew-web-client/dist/index.html'
   end
 end
 
-@__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001", out: "test.out")
+@__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test", out: "test.out")
 npm_bin = `npm bin`.strip
 client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html --rewrite '/api/* -> http://localhost:8001/api/$1'"
 @__client_pid = spawn(client_command, out: "test.out", err: 'test.out')
@@ -42,17 +42,10 @@ client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html --re
 File.open('server.pid', 'w') { |file| file.write(@__server_pid)}
 File.open('client.pid', 'w') { |file| file.write(@__client_pid)}
 
-require 'capybara/cucumber'
-
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
-
-Capybara.default_driver = :chrome
-
 at_exit do
   Process.kill('HUP', @__server_pid)
   File.delete('server.pid')
   Process.kill('HUP', @__client_pid)
   File.delete('client.pid')
 end
+

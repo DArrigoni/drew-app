@@ -6,6 +6,8 @@ source 'https://rubygems.org'
 gem 'puma'
 gem 'thor'
 gem 'foreman'
+gem 'activerecord'
+gem 'pg'
 
 group :development, :test do
   gem 'pry'
@@ -16,4 +18,5 @@ group :test do
   gem 'rspec'
   gem 'capybara'
   gem 'selenium-webdriver'
+  gem 'database_cleaner'
 end
