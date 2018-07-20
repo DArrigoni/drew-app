@@ -2,19 +2,6 @@
 #
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
 
-docker_config: &docker_config
-  docker:
-    - image: circleci/ruby:2.5.1-node-browsers
-      environment:
-        RAILS_ENV: test
-        PGHOST: 127.0.0.1
-        PGUSER: root
-    - image: circleci/postgres:9.4
-      environment:
-        POSTGRES_USER: root
-        POSTGRES_DB: drew-app_test
-  
-
 version: 2
 workflows:
   version: 2
@@ -34,7 +21,16 @@ workflows:
             - server
 jobs:
   workspace:
-    <<: *docker_config
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-server
 
     steps:
@@ -65,14 +61,14 @@ jobs:
           keys:
             - v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
             - v1-server-dependencies-
-      - run: 
+      - run:
         command: bundle install --jobs=4 --retry=3 vendor/bundle
         working_directory: ~/repo/drew-server
       - save_cache:
-          paths: 
+          paths:
             - drew-server/vendor/bundle
           keys: v1-server-dependencies-{{ checksum 'drew-server/Gemfile.lock' }}
-      
+
       # Web-Client Deps
       - restore_cache:
           keys:
@@ -93,7 +89,16 @@ jobs:
             - repo
 
   web-client:
-    <<: &docker_config
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-web-client
     steps:
       - attach_workspace:
@@ -101,7 +106,16 @@ jobs:
       - run: npm run test:unit
 
   server:
-    <<: &docker_config
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-server
 
     steps:
@@ -127,9 +141,17 @@ jobs:
           path: /tmp/test-results
           destination: test-results
   integration:
-    <<: &docker_config
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: drew-app_test
     working_directory: ~/repo
 
     steps:
       - run: echo 'Coming soon!'
-      # collect reports
