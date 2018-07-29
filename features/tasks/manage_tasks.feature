@@ -7,3 +7,10 @@ Feature: Manage Tasks
     Given I have some tasks
     When I goto the task page
     Then I should see my tasks
+
+  Scenario: Add a new task
+    Given there are no tasks
+    When I goto the task page
+    And I add a task for "Do something!"
+    Then I should see 1 task
+    And the first task should be "Do something!"

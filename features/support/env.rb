@@ -1,4 +1,14 @@
 require 'pry'
+require 'active_record'
+require 'active_record/fixtures'
+require 'active_support'
+
+
+# Setup database connection
+ActiveRecord::Base.establish_connection({ "adapter"=>"postgresql",
+                                          "encoding"=>"unicode",
+                                          "pool"=>"5",
+                                          "database"=>"drew-app_test"})
 
 def check_stale_pid pid_file
   if File.exists?(pid_file)

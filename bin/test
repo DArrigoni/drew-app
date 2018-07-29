@@ -1,0 +1,14 @@
+#!/bin/bash
+BASEDIR=$(dirname "$0")
+cd "$BASEDIR/.."
+
+rm -r drew-web-client/dist
+
+cd drew-server
+bundle exec rake
+
+cd ../drew-web-client
+npm run test:unit
+
+cd ..
+cucumber
