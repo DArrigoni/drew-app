@@ -32,9 +32,13 @@ end
 check_stale_pid('server.pid')
 check_stale_pid('client.pid')
 
+if ENV['CLEAN']
+  `rm -r ./drew-web-client/dist/`
+end
+
 unless File.exists? './drew-web-client/dist/index.html'
   print 'Building drew-web-client... '
-  result = system('npm run build --prefix ./drew-web-client/', out: 'test.out', err: 'test.out')
+  result = system('NODE_ENV=test npm run build --prefix ./drew-web-client/ -- --mode test', out: 'test.out', err: 'test.out')
   if result
     puts 'Success'
   else

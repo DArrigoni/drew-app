@@ -14,3 +14,10 @@ Feature: Manage Tasks
     And I add a task for "Do something!"
     Then I should see 1 task
     And the first task should be "Do something!"
+    And the form should be reset
+
+  Scenario: Mark a task as done
+    Given I have some tasks
+    When I goto the task page
+#    And I mark the first task as done
+#    Then I should see 1 done task
