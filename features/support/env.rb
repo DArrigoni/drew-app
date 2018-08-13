@@ -49,7 +49,7 @@ unless File.exists? './drew-web-client/dist/index.html'
   end
 end
 
-@__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test", out: "test.out")
+@__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test", out: "test.out", err: 'test.out')
 npm_bin = `npm bin`.strip
 client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html"
 @__client_pid = spawn(client_command, out: "test.out", err: 'test.out')
