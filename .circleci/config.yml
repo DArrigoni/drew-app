@@ -184,11 +184,19 @@ jobs:
           command: |
             bundle install --path vendor/bundle
             bundle exec rake db:create db:schema:load --trace
+            sleep 5
           working_directory: ~/repo/drew-server
 
       - run:
           name: Integration tests
           command: bundle exec cucumber
+
+      - store_artifacts:
+          path: ~/repo/test.out
+
+      - store_artifacts:
+          path: ~/repo/drew-server/logs/
+
 
   deploy:
     docker:
