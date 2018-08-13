@@ -189,16 +189,18 @@ jobs:
 
       - run:
           name: Integration tests
-          command: bundle exec cucumber
+          command: |
+            bundle install --path vendor/bundle
+            bundle exec cucumber
 
       - store_artifacts:
           path: ~/repo/test.out
 
       - store_artifacts:
-          path: ~/repo/drew-server/logs/test.log
+          path: ~/repo/drew-server/log/test.log
 
       - store_artifacts:
-          path: ~/repo/error-reports/*
+          path: ~/repo/error-report/*
 
 
   deploy:
