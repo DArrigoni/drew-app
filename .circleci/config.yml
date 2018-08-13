@@ -19,6 +19,9 @@ workflows:
           requires:
             - web-client
             - server
+      - deploy:
+          requires:
+            - integration
 jobs:
   workspace:
     docker:
@@ -183,3 +186,37 @@ jobs:
       - run:
           name: Integration tests
           command: bundle exec cucumber
+
+  deploy:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+    working_directory: ~/repo
+
+    steps:
+      - attach_workspace:
+          at: ~/
+
+      - run:
+          name: Install deployment dependencies
+          working_directory: ~/repo/drew-server
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get install python-pip python-dev build-essential
+            sudo pip install awsebcli --upgrade
+
+      - run:
+          name: Deploy server
+          working_directory: ~/repo/drew-server
+          command: eb deploy
+
+      - run:
+          name: Clean and build web-client for production
+          working_directory: ~/repo/
+          command: |
+            rm -r dist/
+            npm run build -- --mode production
+
+      - run:
+          name: Deploy web-client
+          working_directory: ~/repo/drew-web-client
+          command: npm run deploy
