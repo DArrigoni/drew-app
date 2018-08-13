@@ -29,10 +29,10 @@ jobs:
         environment:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
-          PGUSER: root
+          PGUSER: pguser_test
       - image: circleci/postgres:9.4
         environment:
-          POSTGRES_USER: root
+          POSTGRES_USER: pguser_test
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo
 
@@ -102,10 +102,10 @@ jobs:
         environment:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
-          PGUSER: root
+          PGUSER: pguser_test
       - image: circleci/postgres:9.4
         environment:
-          POSTGRES_USER: root
+          POSTGRES_USER: pguser_test
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-web-client
     steps:
@@ -119,23 +119,26 @@ jobs:
         environment:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
-          PGUSER: root
+          PGUSER: pguser_test
       - image: circleci/postgres:9.4
         environment:
-          POSTGRES_USER: root
+          POSTGRES_USER: pguser_test
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-server
 
     steps:
       - attach_workspace:
           at: ~/
+      - run:
+          name: Verify Database Running
+          command: dockerize -wait tcp://127.0.0.1:5432 -timeout 120s
 
       # Database setup
       - run:
           name: Prepare Database
           command: |
             bundle install --path vendor/bundle
-            bundle exec rake db:create db:schema:load
+            bundle exec rake db:create db:schema:load --trace
 
       # Run and save tests
       - run:
@@ -160,23 +163,27 @@ jobs:
         environment:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
-          PGUSER: root
+          PGUSER: pguser_test
       - image: circleci/postgres:9.4
         environment:
-          POSTGRES_USER: root
+          POSTGRES_USER: pguser_test
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo
 
     steps:
       - attach_workspace:
           at: ~/
+      - run:
+          name: Verify Database Running
+          command: dockerize -wait tcp://127.0.0.1:5432 -timeout 120s
+
 
       # Database setup
       - run:
           name: Prepare Database
           command: |
             bundle install --path vendor/bundle
-            bundle exec rake db:create db:schema:load
+            bundle exec rake db:create db:schema:load --trace
           working_directory: ~/repo/drew-server
 
       - run:
