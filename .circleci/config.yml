@@ -188,13 +188,11 @@ jobs:
           working_directory: ~/repo/drew-server
 
       - run:
-          name: Prepare runner
-          command: bundle install --path vendor/bundle
-
-
-      - run:
           name: Integration tests
-          command: bundle exec cucumber
+          command: |
+            bundle install --path vendor/bundle
+            BUNDLE_GEMFILE=./drew-server/Gemfile bundle install --path vendor/bundle
+            bundle exec cucumber
 
       - store_artifacts:
           path: ~/repo/test.out
