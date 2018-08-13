@@ -195,7 +195,10 @@ jobs:
           path: ~/repo/test.out
 
       - store_artifacts:
-          path: ~/repo/drew-server/logs/
+          path: ~/repo/drew-server/logs/test.log
+
+      - store_artifacts:
+          path: ~/repo/error-reports/*
 
 
   deploy:

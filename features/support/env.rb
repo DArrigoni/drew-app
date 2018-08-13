@@ -65,3 +65,16 @@ at_exit do
   File.delete('client.pid')
 end
 
+After do |scenario|
+  # Available scenario methods: #failed?, #passed?, and #exception
+  if scenario.failed?
+    errors = page.driver.browser.manage.logs.get(:browser)
+    if errors.present?
+      message = errors.map(&:message).join("\n")
+      puts message
+    end
+
+    path = File.join("error-report", "#{scenario.__id__}.png")
+    page.driver.browser.save_screenshot(path)
+  end
+end
