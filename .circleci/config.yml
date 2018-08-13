@@ -59,7 +59,6 @@ jobs:
       - save_cache:
           paths:
             - vendor/bundle
-            - node_modules
           key: v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
 
       # Server Deps
@@ -111,10 +110,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: |
-          pwd
-          ls
-          ls ~/repo/drew-server
       - run: npm run test:unit
 
   server:

@@ -8,7 +8,9 @@ require 'active_support'
 ActiveRecord::Base.establish_connection({ "adapter"=>"postgresql",
                                           "encoding"=>"unicode",
                                           "pool"=>"5",
-                                          "database"=>"drew-app_test"})
+                                          "database"=>"drew-app_test",
+                                          "username"=>ENV['POSTGRES_USER']
+                                        })
 
 def check_stale_pid pid_file
   if File.exists?(pid_file)
@@ -32,13 +34,13 @@ end
 check_stale_pid('server.pid')
 check_stale_pid('client.pid')
 
-if ENV['CLEAN']
+unless ENV['CLEAN'] == 'false'
   `rm -r ./drew-web-client/dist/`
 end
 
 unless File.exists? './drew-web-client/dist/index.html'
   print 'Building drew-web-client... '
-  result = system('NODE_ENV=test npm run build --prefix ./drew-web-client/ -- --mode test', out: 'test.out', err: 'test.out')
+  result = system('npm run build --prefix ./drew-web-client/ -- --mode test', out: 'test.out', err: 'test.out')
   if result
     puts 'Success'
   else
@@ -49,7 +51,7 @@ end
 
 @__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test", out: "test.out")
 npm_bin = `npm bin`.strip
-client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html --rewrite '/api/* -> http://localhost:8001/api/$1'"
+client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html"
 @__client_pid = spawn(client_command, out: "test.out", err: 'test.out')
 
 

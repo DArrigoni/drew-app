@@ -6,3 +6,5 @@ DatabaseCleaner.strategy = :truncation
 Around do |_, block|
   DatabaseCleaner.cleaning(&block)
 end
+
+DatabaseCleaner.clean
