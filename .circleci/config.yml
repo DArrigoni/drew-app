@@ -58,6 +58,7 @@ jobs:
             npm install
       - save_cache:
           paths:
+            - node_modules
             - vendor/bundle
           key: v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
 
