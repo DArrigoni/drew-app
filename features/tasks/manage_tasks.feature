@@ -19,5 +19,5 @@ Feature: Manage Tasks
   Scenario: Mark a task as done
     Given I have some tasks
     When I goto the task page
-#    And I mark the first task as done
-#    Then I should see 1 done task
+    And I mark the first task as done
+    Then I should see 4 tasks

@@ -16,7 +16,7 @@ end
 
 When(/^I mark the first task as done$/) do
   within('#tasks li:first-of-type') do
-    click_on 'task_mark_done'
+    click_on 'Done'
   end
 end
 
