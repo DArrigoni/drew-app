@@ -194,14 +194,31 @@ jobs:
             BUNDLE_GEMFILE=./drew-server/Gemfile bundle install --path vendor/bundle
             bundle exec cucumber
 
+
       - store_artifacts:
-          path: ~/repo/test.out
+          path: ~/repo/build-test.out
+
+      - store_artifacts:
+          path: ~/repo/build-err.out
+
+      - store_artifacts:
+          path: ~/repo/server-test.out
+
+      - store_artifacts:
+          path: ~/repo/server-err.out
+
+      - store_artifacts:
+          path: ~/repo/client-test.out
+
+      - store_artifacts:
+          path: ~/repo/client-err.out
 
       - store_artifacts:
           path: ~/repo/drew-server/log/test.log
 
       - store_artifacts:
-          path: ~/repo/error-report/*
+          path: ~/repo/error-report/
+
 
 
   deploy:
@@ -228,9 +245,8 @@ jobs:
 
       - run:
           name: Clean and build web-client for production
-          working_directory: ~/repo/
+          working_directory: ~/repo/drew-web-client
           command: |
-            rm -r dist/
             npm run build -- --mode production
 
       - run:

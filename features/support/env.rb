@@ -40,7 +40,7 @@ end
 
 unless File.exists? './drew-web-client/dist/index.html'
   print 'Building drew-web-client... '
-  result = system('npm run build --prefix ./drew-web-client/ -- --mode test', out: 'test.out', err: 'test.out')
+  result = system('npm run build --prefix ./drew-web-client/ -- --mode test', out: 'build-test.out', err: 'build-err.out')
   if result
     puts 'Success'
   else
@@ -49,14 +49,17 @@ unless File.exists? './drew-web-client/dist/index.html'
   end
 end
 
-@__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test", out: "test.out", err: 'test.out')
+@__server_pid = spawn("BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test", out: "server-test.out", err: 'server-err.out')
 npm_bin = `npm bin`.strip
 client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html"
-@__client_pid = spawn(client_command, out: "test.out", err: 'test.out')
+@__client_pid = spawn(client_command, out: "client-test.out", err: 'client-err.out')
 
 
 File.open('server.pid', 'w') { |file| file.write(@__server_pid)}
 File.open('client.pid', 'w') { |file| file.write(@__client_pid)}
+
+# Brute force. :(
+sleep(2)
 
 at_exit do
   Process.kill('HUP', @__server_pid)
