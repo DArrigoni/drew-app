@@ -21,3 +21,12 @@ Feature: Manage Tasks
     When I goto the task page
     And I mark the first task as done
     Then I should see 4 tasks
+
+  Scenario: Show done tasks
+    Given I have some mixed tasks
+    When I goto the task page
+    Then I should see 0 done tasks
+    And I should see 3 tasks
+    When I filter in done tasks
+    Then I should see 3 done tasks
+    And I should see 6 tasks
