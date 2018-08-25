@@ -1,3 +1,7 @@
+def tasks_page
+  @tasks_page ||= TasksPage.new
+end
+
 Given(/^I have some tasks$/) do
   load_fixture
 end
@@ -9,66 +13,78 @@ Given(/^I have some mixed tasks$/) do
   load_fixture('mixed')
 end
 
-Given(/^I am on the task page$/) do
-  step('I goto the task page')
+Given(/^I (?:am on|go to) the task page$/) do
+  tasks_page.visit_page
 end
 
 Given(/^the first task has been started$/) do
   step('I start the first task')
 end
 
-When(/^I goto the task page$/) do
-  visit('http://localhost:8000/tasks')
+Given(/^I have added the task "([^"]*)"$/) do |task_title|
+  tasks_page.visit_page
+  tasks_page.add_new_task(title: task_title)
+end
+
+Given(/^the "([^"]*)" task has been started$/) do |task_title|
+  tasks_page.visit_page
+  step("I start the \"#{task_title}\" task")
 end
 
 When(/^I add a task for "([^"]*)"$/) do |task_title|
-  fill_in(:task_title, with: task_title )
-  click_on('Save')
+  tasks_page.add_new_task(title: task_title)
 end
 
 When(/^I mark the first task as done$/) do
-  within('#tasks li:first-of-type') do
-    click_on 'Done'
-  end
+  tasks_page.tasks.first.mark_done
 end
 
 When(/^I filter in done tasks$/) do
-  check 'Show done'
+  tasks_page.toggle_show_done_filter
 end
 
-When(/^I start the first task$/) do
-  within('#tasks li:first-of-type') do
-    click_on 'Start'
-  end
+When(/^I start the(?: first)? task$/) do
+  tasks_page.tasks.first.start
 end
 
-When(/^I stop the first task$/) do
-  within('#tasks li:first-of-type') do
-    click_on 'Stop'
-  end
+When(/^I start the "([^"]*)" task/) do |title|
+  tasks_page.task_for(title).start
+end
+
+When(/^I stop the(?: first)? task$/) do
+  tasks_page.tasks.first.stop
+end
+
+When(/^I go off and do some work then return$/) do
+  page.refresh
 end
 
 Then(/^I should see my tasks$/) do
-  step('I should see 5 tasks')
+  expect(tasks_page).to have_task_count_of 5
 end
 
-Then(/^the first task should be "([^"]*)"$/) do |task_name|
-  expect(page.find('#tasks li')).to have_content(task_name)
+Then(/^the first task should be "([^"]*)"$/) do |title|
+  expect(tasks_page.tasks.first.title).to eq(title)
 end
 
-Then(/^I should see (\d+) tasks?$/) do |count|
-  expect(page).to have_css('#tasks li.task-list-item', count: count)
+Then(/^I should see (\d+)( done| started)? tasks?$/) do |count, qualifier|
+  expect(tasks_page).to have_task_count_of count, qualifier
 end
 
 Then(/^the form should be reset$/) do
-  expect(page.find('input[name="task_title"]').value).to eq ''
+  expect(tasks_page.new_task_input.value).to eq ''
 end
 
-Then(/^I should see (\d+) done tasks?$/) do |count|
-  expect(page).to have_css('#tasks li.task-list-item.done', count: count)
+Then(/^I should see the "([^"]*)" task is( no longer)? started$/) do |title, negation|
+  task_list_item = tasks_page.task_for(title)
+
+  if negation.present?
+    expect(task_list_item).to_not be_started
+  else
+    expect(task_list_item).to be_started
+  end
 end
 
-
-Then(/^I should see (\d+) started tasks?$/) do |count|
-  expect(page).to have_css('#tasks li.task-list-item.started', count: count)
+Then(/^I should see a task for "([^"]*)"$/) do |title|
+  expect(tasks_page.task_for(title)).to be_present
 end
