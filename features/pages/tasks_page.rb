@@ -8,12 +8,16 @@ class TasksPage
   end
 
   def add_new_task title:
-    fill_in(:task_title, with: title)
-    click_on 'Save'
+    scoped do
+      fill_in(:task_title, with: title)
+      click_on 'Save'
+    end
   end
 
   def tasks
-    find_all('#tasks li.task-list-item').map { |elem| TaskListItem.new(elem) }
+    scoped do
+      find_all('li.task-list-item').map { |elem| TaskListItem.new(elem) }
+    end
   end
 
   def task_for title
@@ -21,11 +25,59 @@ class TasksPage
   end
 
   def toggle_show_done_filter
-    check 'Show done'
+    scoped do
+      check 'Show done'
+    end
   end
 
   def new_task_input
-    find('input[name="task_title"]')
+    scoped do
+      find('input[name="task_title"]')
+    end
+  end
+
+  private
+
+  def scoped
+    within '#tasks' do
+      yield
+    end
+  end
+
+  class TaskListItem
+    include Capybara::DSL
+
+    attr_accessor :element
+
+    def initialize element
+      self.element = element
+    end
+
+    def title
+      element.find('.title').text
+    end
+
+    def mark_done
+      within element do
+        click_on 'Done'
+      end
+    end
+
+    def start
+      within element do
+        click_on 'Start'
+      end
+    end
+
+    def stop
+      within element do
+        click_on 'Stop'
+      end
+    end
+
+    def open_detail
+      element.click
+    end
   end
 end
 
@@ -38,38 +90,6 @@ RSpec::Matchers.define :have_task_count_of do |count, qualifier|
                end
 
     has_css?(selector, count: count)
-  end
-end
-
-class TaskListItem
-  include Capybara::DSL
-
-  attr_accessor :element
-
-  def initialize element
-    self.element = element
-  end
-
-  def title
-    element.find('.title').text
-  end
-
-  def mark_done
-    within element do
-      click_on 'Done'
-    end
-  end
-
-  def start
-    within element do
-      click_on 'Start'
-    end
-  end
-
-  def stop
-    within element do
-      click_on 'Stop'
-    end
   end
 end
 

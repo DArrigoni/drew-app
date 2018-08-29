@@ -7,6 +7,8 @@ Feature: Manage Tasks
     Given I have some tasks
     When I go to the task page
     Then I should see my tasks
+    When I open the details of the first task
+    Then I should see the first task's description
 
   Scenario: Add a new task
     Given there are no tasks

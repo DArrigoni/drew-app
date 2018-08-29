@@ -2,6 +2,10 @@ def tasks_page
   @tasks_page ||= TasksPage.new
 end
 
+def task_page
+  @task_page ||= TaskPage.new
+end
+
 Given(/^I have some tasks$/) do
   load_fixture
 end
@@ -59,6 +63,10 @@ When(/^I go off and do some work then return$/) do
   page.refresh
 end
 
+When(/^I open the details of the first task$/) do
+  tasks_page.tasks.first.open_detail
+end
+
 Then(/^I should see my tasks$/) do
   expect(tasks_page).to have_task_count_of 5
 end
@@ -87,4 +95,8 @@ end
 
 Then(/^I should see a task for "([^"]*)"$/) do |title|
   expect(tasks_page.task_for(title)).to be_present
+end
+
+Then(/^I should see the first task's description$/) do
+  expect(task_page.description).to be_present
 end
