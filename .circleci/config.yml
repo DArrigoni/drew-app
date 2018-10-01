@@ -8,18 +8,23 @@ workflows:
 
   ci:
     jobs:
-      - workspace
+      - workspace:
+          context: drew-app-prod
       - web-client:
+          context: drew-app-prod
           requires:
             - workspace
       - server:
+          context: drew-app-prod
           requires:
             - workspace
       - integration:
+          context: drew-app-prod
           requires:
             - web-client
             - server
       - deploy:
+          context: drew-app-prod
           requires:
             - integration
 jobs:
@@ -81,6 +86,12 @@ jobs:
           keys:
             - v1-web-client-dependencies-{{ checksum "drew-web-client/package.json" }}
             - v1-web-client-dependencies-
+      - run:
+          name: Configure font-awesome dependencies
+          command: |
+            npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+            npm config set "//npm.fontawesome.com/:_authToken" $FAWESOME_KEY
+          working_directory: ~/repo/drew-web-client
       - run:
           name: Web-Client dependencies
           command: npm install
