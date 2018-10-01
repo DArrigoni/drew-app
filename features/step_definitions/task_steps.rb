@@ -32,7 +32,12 @@ end
 
 Given(/^the "([^"]*)" task has been started$/) do |task_title|
   tasks_page.visit_page
-  step("I start the \"#{task_title}\" task")
+  tasks_page.task_for(task_title).start
+end
+
+Given(/^I am on the details page for first task$/) do
+  tasks_page.visit_page
+  tasks_page.tasks.first.open_detail
 end
 
 When(/^I add a task for "([^"]*)"$/) do |task_title|
@@ -51,8 +56,8 @@ When(/^I start the(?: first)? task$/) do
   tasks_page.tasks.first.start
 end
 
-When(/^I start the "([^"]*)" task/) do |title|
-  tasks_page.task_for(title).start
+When(/^I start the "([^"]*)" task/) do |task_title|
+  tasks_page.task_for(task_title).start
 end
 
 When(/^I stop the(?: first)? task$/) do
@@ -65,6 +70,18 @@ end
 
 When(/^I open the details of the first task$/) do
   tasks_page.tasks.first.open_detail
+end
+
+When(/^I click the edit button$/) do
+  task_page.start_edit
+end
+
+When(/^I change the title to "([^"]*)"$/) do |task_title|
+  task_page.set_title task_title
+end
+
+When(/^I save my changes$/) do
+  task_page.save_changes
 end
 
 Then(/^I should see my tasks$/) do
@@ -99,4 +116,8 @@ end
 
 Then(/^I should see the first task's description$/) do
   expect(task_page.description).to be_present
+end
+
+Then(/^I should be ready to edit the task$/) do
+  expect(task_page.title_has_focus?).to be true
 end
