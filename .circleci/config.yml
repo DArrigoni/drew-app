@@ -25,6 +25,10 @@ workflows:
             - server
       - deploy:
           context: drew-app-prod
+          filters:
+            branches:
+              only:
+               - master
           requires:
             - integration
 jobs:
