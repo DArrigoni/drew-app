@@ -52,6 +52,10 @@ When(/^I filter in done tasks$/) do
   tasks_page.toggle_show_done_filter
 end
 
+When(/^I filter for started tasks$/) do
+  tasks_page.toggle_focus_started_tasks_filter
+end
+
 When(/^I start the(?: first)? task$/) do
   tasks_page.tasks.first.start
 end
@@ -110,8 +114,12 @@ Then(/^I should see the "([^"]*)" task is( no longer)? started$/) do |title, neg
   end
 end
 
-Then(/^I should see a task for "([^"]*)"$/) do |title|
-  expect(tasks_page.task_for(title)).to be_present
+Then(/^I should( not)? see a task for "([^"]*)"$/) do |negation, title|
+  if negation
+    expect(tasks_page.task_for(title)).to_not be_present
+  else
+    expect(tasks_page.task_for(title)).to be_present
+  end
 end
 
 Then(/^I should see the first task's description$/) do
