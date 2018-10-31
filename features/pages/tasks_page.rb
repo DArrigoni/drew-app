@@ -30,6 +30,12 @@ class TasksPage
     end
   end
 
+  def toggle_focus_started_tasks_filter
+    scoped do
+      check 'Focus started'
+    end
+  end
+
   def new_task_input
     scoped do
       find('input[name="task_title"]')

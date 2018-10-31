@@ -20,3 +20,11 @@ Feature: Manage Tasks
     When I go off and do some work then return
     Then I should see the "Fix the roof" task is no longer started
 
+  Scenario: Show started tasks
+    Given I have added the task "Fix the roof"
+    And I have added the task "Research the nutrition"
+    And the "Fix the roof" task has been started
+    And I am on the task page
+    When I filter for started tasks
+    Then I should see 1 task
+    And I should not see a task for "Research the nutrition"

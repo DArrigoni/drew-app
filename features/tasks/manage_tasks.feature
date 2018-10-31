@@ -35,7 +35,6 @@ Feature: Manage Tasks
     Then I should see 3 done tasks
     And I should see 6 tasks
 
-  @WorkInProgress
   Scenario: Change task title
     Given I have added the task "Fix the rof"
     And I am on the details page for first task
