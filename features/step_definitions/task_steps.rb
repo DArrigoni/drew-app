@@ -10,6 +10,10 @@ Given(/^I have some tasks$/) do
   load_fixture
 end
 
+Given(/^there are some tasks$/) do
+  load_fixture
+end
+
 Given(/^there are no tasks$/) do
 end
 
