@@ -30,7 +30,6 @@ Given(/^the first task has been started$/) do
 end
 
 Given(/^I have added the task "([^"]*)"$/) do |task_title|
-  tasks_page.visit_page
   tasks_page.add_new_task(title: task_title)
 end
 
@@ -101,6 +100,7 @@ Then(/^the first task should be "([^"]*)"$/) do |title|
 end
 
 Then(/^I should see (\d+)( done| started)? tasks?$/) do |count, qualifier|
+  expect(tasks_page).to be_current_page
   expect(tasks_page).to have_task_count_of count, qualifier
 end
 

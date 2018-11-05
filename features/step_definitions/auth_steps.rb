@@ -10,12 +10,14 @@ Then(/^I should see the landing page$/) do
   expect(page).to have_selector('#login')
 end
 
-When(/^I click sign up$/) do
+When(/^I click log in$/) do
   click_on('Log in')
 end
 
-And(/^I sign up with the email "([^"]*)"$/) do |arg|
-  binding.pry
+And(/^I sign in with the email "([^"]*)" and password "([^"]*)"$/) do |email, password|
+  fill_in(:email, with: email)
+  fill_in(:password, with: password)
+  page.find('.auth0-lock-submit').click
 end
 
 Then(/^I should see the dashboard$/) do
