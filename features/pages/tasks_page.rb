@@ -3,8 +3,15 @@ require 'rspec/expectations'
 class TasksPage
   include Capybara::DSL
 
+  TEST_HOST = 'http://localhost:8000'
+  URL_PATH = '/tasks'
+
   def visit_page
-    visit('http://localhost:8000/tasks')
+    visit("#{TEST_HOST}#{URL_PATH}")
+  end
+
+  def current_page?
+    page.has_current_path?(URL_PATH)
   end
 
   def add_new_task title:
@@ -95,7 +102,12 @@ RSpec::Matchers.define :have_task_count_of do |count, qualifier|
                else                '#tasks li.task-list-item'
                end
 
-    has_css?(selector, count: count)
+    if count <= 0 # Asserting 0 count can result in a false positive via race condition
+      !has_css?(selector)
+    else
+      has_css?(selector, count: count)
+    end
+
   end
 end
 
