@@ -1,34 +1,40 @@
 task1:
+  user_id: 1
   title: 'Task Number 1'
   done: false
   created_at: <%= Time.now.to_s(:db) %>
   updated_at: <%= Time.now.to_s(:db) %>
 
 task2:
+  user_id: 1
   title: 'Task Number 2'
   done: false
   created_at: <%= Time.now.to_s(:db) %>
   updated_at: <%= Time.now.to_s(:db) %>
 
 task3:
+  user_id: 1
   title: 'Task Number 3'
   done: false
   created_at: <%= Time.now.to_s(:db) %>
   updated_at: <%= Time.now.to_s(:db) %>
 
 done_task1:
+  user_id: 1
   title: 'Done Task Number 1'
   done: true
   created_at: <%= Time.now.to_s(:db) %>
   updated_at: <%= Time.now.to_s(:db) %>
 
 done_task2:
+  user_id: 1
   title: 'Done Task Number 2'
   done: true
   created_at: <%= Time.now.to_s(:db) %>
   updated_at: <%= Time.now.to_s(:db) %>
 
 done_task3:
+  user_id: 1
   title: 'Done Task Number 3'
   done: true
   created_at: <%= Time.now.to_s(:db) %>

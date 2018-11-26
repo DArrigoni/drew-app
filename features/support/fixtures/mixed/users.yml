@@ -1,0 +1,9 @@
+bob:
+  id: 1
+  email: 'bob@bob.bob'
+  nickname: 'Bob'
+  avatar_url: ''
+  created_at: <%= Time.now.to_s(:db) %>
+  updated_at: <%= Time.now.to_s(:db) %>
+
+

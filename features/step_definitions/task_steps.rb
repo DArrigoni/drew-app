@@ -30,7 +30,9 @@ Given(/^the first task has been started$/) do
 end
 
 Given(/^I have added the task "([^"]*)"$/) do |task_title|
+  tasks_page.visit_page
   tasks_page.add_new_task(title: task_title)
+  tasks_page.visit_page
 end
 
 Given(/^the "([^"]*)" task has been started$/) do |task_title|
