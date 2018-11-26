@@ -3,6 +3,10 @@ Feature: Manage Tasks
   I want to be able to track my task status
   So that I know what work I'm currently doing and what to do next
 
+  Background:
+    Given the user Bob exists
+    And I have logged in
+
   Scenario: Start a task
     Given I have added the task "Fix the roof"
     And I am on the task page
