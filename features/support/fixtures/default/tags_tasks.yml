@@ -1,0 +1,11 @@
+join1:
+  tag_id: 1
+  task_id: 1
+
+join2:
+  tag_id: 1
+  task_id: 2
+
+join3:
+  tag_id: 1
+  task_id: 5

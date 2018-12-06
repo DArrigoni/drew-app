@@ -135,3 +135,15 @@ end
 Then(/^I should be ready to edit the task$/) do
   expect(task_page.title_has_focus?).to be true
 end
+
+Then(/^I should see (\d+) task(?:s)? tagged as "([^"]*)"$/) do |count, tag|
+  expect(tasks_page).to have_task_count_of(count, {tag: tag})
+end
+
+When(/^I click the "([^"]*)" tag$/) do |tag|
+  tasks_page.click_first_task_tag_for tag
+end
+
+When(/^I clear the tag filter$/) do
+  tasks_page.clear_task_filter
+end

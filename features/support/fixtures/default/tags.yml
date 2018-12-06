@@ -1,0 +1,6 @@
+tag1:
+  user_id: 1
+  id: 1
+  name: 'home'
+  created_at: <%= Time.now.to_s(:db) %>
+  updated_at: <%= Time.now.to_s(:db) %>
