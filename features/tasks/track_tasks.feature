@@ -32,3 +32,6 @@ Feature: Manage Tasks
     When I filter for started tasks
     Then I should see 1 task
     And I should not see a task for "Research the nutrition"
+    When I reset the started filter for tasks
+    Then I should see 2 tasks
+

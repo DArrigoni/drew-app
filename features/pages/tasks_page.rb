@@ -43,9 +43,15 @@ class TasksPage
     end
   end
 
-  def toggle_focus_started_tasks_filter
+  def enable_focus_started_tasks_filter
     scoped do
       check 'Focus started'
+    end
+  end
+
+  def disable_focus_started_tasks_filter
+    scoped do
+      uncheck 'Focus started'
     end
   end
 

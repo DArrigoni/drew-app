@@ -58,7 +58,11 @@ When(/^I filter in done tasks$/) do
 end
 
 When(/^I filter for started tasks$/) do
-  tasks_page.toggle_focus_started_tasks_filter
+  tasks_page.enable_focus_started_tasks_filter
+end
+
+When(/^I reset the started filter for tasks$/) do
+  tasks_page.disable_focus_started_tasks_filter
 end
 
 When(/^I start the(?: first)? task$/) do
@@ -91,6 +95,14 @@ end
 
 When(/^I save my changes$/) do
   task_page.save_changes
+end
+
+When(/^I click the "([^"]*)" tag$/) do |tag|
+  tasks_page.click_first_task_tag_for tag
+end
+
+When(/^I clear the tag filter$/) do
+  tasks_page.clear_task_filter
 end
 
 Then(/^I should see my tasks$/) do
@@ -138,12 +150,4 @@ end
 
 Then(/^I should see (\d+) task(?:s)? tagged as "([^"]*)"$/) do |count, tag|
   expect(tasks_page).to have_task_count_of(count, {tag: tag})
-end
-
-When(/^I click the "([^"]*)" tag$/) do |tag|
-  tasks_page.click_first_task_tag_for tag
-end
-
-When(/^I clear the tag filter$/) do
-  tasks_page.clear_task_filter
 end
