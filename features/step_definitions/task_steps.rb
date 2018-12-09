@@ -6,6 +6,16 @@ def task_page
   @task_page ||= TaskPage.new
 end
 
+def dashboard_page
+  @dashboard_page ||= DashboardPage.new
+end
+
+def current_page
+  return task_page if task_page.current_page?
+  return tasks_page if tasks_page.current_page?
+  return dashboard_page if dashboard_page.current_page?
+end
+
 Given(/^I have some tasks$/) do
   load_fixture
 end
@@ -23,6 +33,10 @@ end
 
 Given(/^I (?:am on|go to) the task page$/) do
   tasks_page.visit_page
+end
+
+Given(/^I am on the dashboard page$/) do
+  dashboard_page.visit_page
 end
 
 Given(/^the first task has been started$/) do
@@ -106,16 +120,21 @@ When(/^I clear the tag filter$/) do
 end
 
 Then(/^I should see my tasks$/) do
-  expect(tasks_page).to have_task_count_of 5
+  expect(current_page).to have_task_count_of 5
 end
 
 Then(/^the first task should be "([^"]*)"$/) do |title|
   expect(tasks_page.tasks.first.title).to eq(title)
 end
 
-Then(/^I should see (\d+)( done| started)? tasks?$/) do |count, qualifier|
-  expect(tasks_page).to be_current_page
-  expect(tasks_page).to have_task_count_of count, qualifier
+Then(/^I should see (\d+)( done| started)? tasks?( on the dashboard| on the tasks page)?$/) do |count, qualifier, page|
+  if page&.include?('dashboard')
+    expect(dashboard_page).to be_current_page
+  else
+    expect(tasks_page).to be_current_page
+  end
+
+  expect(current_page).to have_task_count_of count, qualifier
 end
 
 Then(/^the form should be reset$/) do

@@ -35,3 +35,9 @@ Feature: Manage Tasks
     When I reset the started filter for tasks
     Then I should see 2 tasks
 
+  Scenario: See started tasks on the dashboard
+    Given I have added the task "Fix the roof"
+    And I have added the task "Research the nutrition"
+    And the "Fix the roof" task has been started
+    And I am on the dashboard page
+    Then I should see 1 task on the dashboard

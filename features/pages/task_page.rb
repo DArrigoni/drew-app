@@ -1,6 +1,6 @@
-class TaskPage
-  include Capybara::DSL
+require_relative 'test_page'
 
+class TaskPage < TestPage
   def description
     scoped do
       find('.description').text
@@ -30,12 +30,4 @@ class TaskPage
       has_css?('#task__edit-form input[name="title"]:focus')
     end
   end
-
-  private
-
-  def scoped
-    within '#task' do
-      yield
-    end
-  end
-end 
+end

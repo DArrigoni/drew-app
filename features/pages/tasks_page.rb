@@ -1,19 +1,7 @@
 require 'rspec/expectations'
+require_relative 'test_page'
 
-class TasksPage
-  include Capybara::DSL
-
-  TEST_HOST = 'http://localhost:8000'
-  URL_PATH = '/tasks'
-
-  def visit_page
-    visit("#{TEST_HOST}#{URL_PATH}")
-  end
-
-  def current_page?
-    page.has_current_path?(URL_PATH)
-  end
-
+class TasksPage < TestPage
   def add_new_task title:
     scoped do
       fill_in('task-input', with: title)
@@ -69,45 +57,35 @@ class TasksPage
 
   private
 
-  def scoped
-    within '#tasks' do
-      yield
-    end
-  end
-
-  class TaskListItem
-    include Capybara::DSL
-
-    attr_accessor :element
-
-    def initialize element
-      self.element = element
-    end
-
+  class TaskListItem < TestPageObject
     def title
       element.find('.title').text
     end
 
+    def started?
+      element.matches_css?('.started')
+    end
+
     def tags
-      within element do
+      scoped do
         find_all('.tag').map { |elem| TaskListItemTag.new(elem)}
       end
     end
 
     def mark_done
-      within element do
+      scoped do
         click_on 'Done'
       end
     end
 
     def start
-      within element do
+      scoped do
         click_on 'Start'
       end
     end
 
     def stop
-      within element do
+      scoped do
         click_on 'Stop'
       end
     end
@@ -116,14 +94,7 @@ class TasksPage
       element.click
     end
 
-    class TaskListItemTag
-      include Capybara::DSL
-
-      attr_accessor :element
-
-      def initialize element
-        self.element = element
-      end
+    class TaskListItemTag < TestPageObject
 
       def name
         element.text
@@ -143,26 +114,20 @@ RSpec::Matchers.define :have_task_count_of do |count, qualifier|
       qualifier = 'tag'
     end
     selector = case qualifier&.strip
-               when 'done'    then '#tasks li.task-list-item.done'
-               when 'started' then '#tasks li.task-list-item.started'
-               when 'tag'     then '#tasks li.task-list-item.tagged'
-               else                '#tasks li.task-list-item'
+               when 'done'    then 'li.task-list-item.done'
+               when 'started' then 'li.task-list-item.started'
+               when 'tag'     then 'li.task-list-item.tagged'
+               else                'li.task-list-item'
                end
 
     if count <= 0 # Asserting 0 count can result in a false positive via race condition
       !has_css?(selector)
     elsif tag.present?
-      has_css?(selector, count: count) && has_css?("#tasks li.task-list-item .tag[data-tag-name='#{tag}']")
+      has_css?(selector, count: count) && has_css?("li.task-list-item .tag[data-tag-name='#{tag}']")
     else
       has_css?(selector, count: count)
     end
 
-  end
-end
-
-RSpec::Matchers.define :be_started do
-  match do |task_list_item|
-    task_list_item.element.matches_css?('.started')
   end
 end
 
