@@ -19,6 +19,12 @@ class TaskPage < TestPage
     end
   end
 
+  def set_description description
+    scoped do
+      fill_in 'description', with: description
+    end
+  end
+
   def save_changes
     scoped do
       click_on 'Save'

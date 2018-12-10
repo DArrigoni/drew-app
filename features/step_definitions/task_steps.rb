@@ -127,6 +127,14 @@ Then(/^the first task should be "([^"]*)"$/) do |title|
   expect(tasks_page.tasks.first.title).to eq(title)
 end
 
+When(/^I change the description to$/) do |description|
+  task_page.set_description description
+end
+
+When (/^I go to the tasks page$/) do
+  tasks_page.visit_page
+end
+
 Then(/^I should see (\d+)( done| started)? tasks?( on the dashboard| on the tasks page)?$/) do |count, qualifier, page|
   if page&.include?('dashboard')
     expect(dashboard_page).to be_current_page
@@ -169,4 +177,8 @@ end
 
 Then(/^I should see (\d+) task(?:s)? tagged as "([^"]*)"$/) do |count, tag|
   expect(tasks_page).to have_task_count_of(count, {tag: tag})
+end
+
+Then(/^I should see the description$/) do |description|
+  expect(page.text).to include(description)
 end

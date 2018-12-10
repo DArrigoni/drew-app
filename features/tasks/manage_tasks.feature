@@ -50,3 +50,27 @@ Feature: Manage Tasks
     When I change the title to "Fix the roof"
     And I save my changes
     Then I should see a task for "Fix the roof"
+
+  Scenario: Add a description to a task
+    Given the user Bob exists
+    And I have logged in
+    And I have added the task "Fix the roof"
+    And I am on the details page for first task
+    When I click the edit button
+    Then I should be ready to edit the task
+    When I change the description to
+        """
+        Roof is big and peaked and requires big nails.
+        Measure roof size
+        Buy lots of big nails
+        """
+    And I save my changes
+    And I go off and do some work then return
+    And I go to the tasks page
+    And I open the details of the first task
+    Then I should see the description
+        """
+        Roof is big and peaked and requires big nails.
+        Measure roof size
+        Buy lots of big nails
+        """
