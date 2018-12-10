@@ -68,7 +68,8 @@ Feature: Manage Tasks
     And I go off and do some work then return
     And I go to the tasks page
     And I open the details of the first task
-    Then I should see the description
+    Then I should see the first task's description
+    And I should see the description
         """
         Roof is big and peaked and requires big nails.
         Measure roof size
