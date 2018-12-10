@@ -98,7 +98,7 @@ jobs:
           working_directory: ~/repo/drew-web-client
       - run:
           name: Web-Client dependencies
-          command: npm install && yarn
+          command: rm -rf node_modules && npm cache clean --force && npm install && yarn install
           working_directory: ~/repo/drew-web-client
       - save_cache:
           paths:
