@@ -93,8 +93,8 @@ jobs:
       - run:
           name: Configure font-awesome dependencies
           command: |
-            yarn config set "@fortawesome:registry" https://npm.fontawesome.com/
-            yarn config set "//npm.fontawesome.com/:_authToken" $FAWESOME_KEY
+            npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+            npm config set "//npm.fontawesome.com/:_authToken" $FAWESOME_KEY
           working_directory: ~/repo/drew-web-client
       - run:
           name: Web-Client dependencies
