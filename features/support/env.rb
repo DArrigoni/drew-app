@@ -40,7 +40,7 @@ end
 
 unless File.exists? './drew-web-client/dist/index.html'
   print 'Building drew-web-client... '
-  result = system('npm run build --prefix ./drew-web-client/ -- --mode test', out: 'out/build-test.out', err: 'out/build-err.out')
+  result = system('yarn --cwd ./drew-web-client/ run build --mode test', out: 'out/build-test.out', err: 'out/build-err.out')
   if result
     puts 'Success'
   else
@@ -50,8 +50,7 @@ unless File.exists? './drew-web-client/dist/index.html'
 end
 
 @__server_pid = spawn('BUNDLE_GEMFILE=./drew-server/Gemfile puma ./drew-server/config.ru -p 8001 -e test', out: 'out/server-test.out', err: 'out/server-err.out')
-npm_bin = `npm bin`.strip
-client_command = "#{npm_bin}/ws -d ./drew-web-client/dist/ --spa index.html"
+client_command = "yarn ws -d ./drew-web-client/dist/ --spa index.html"
 @__client_pid = spawn(client_command, out: 'out/client-test.out', err: 'out/client-err.out')
 
 

@@ -2,9 +2,9 @@
 BASEDIR=$(dirname "$0")
 cd "$BASEDIR/.."
 bundle install
-npm install
+yarn install
 cd drew-web-client
-npm install
+yarn install
 cd ../drew-server
 bundle install
 cd ..

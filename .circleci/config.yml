@@ -58,24 +58,24 @@ jobs:
       # Root Deps
       - restore_cache:
           keys:
-          - v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
-          - v1-root-dependencies-
+          - v2-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+          - v2-root-dependencies-
       - run:
           name: Root Dependeinces
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
-            npm install
+            yarn install
       - save_cache:
           paths:
             - node_modules
             - vendor/bundle
-          key: v1-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "package.json" }}
+          key: v2-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
 
       # Server Deps
       - restore_cache:
           keys:
-            - v1-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
-            - v1-server-dependencies-
+            - v2-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
+            - v2-server-dependencies-
       - run:
           name: Server Dependencies
           command: bundle install --jobs=4 --retry=3 --path vendor/bundle
@@ -83,27 +83,27 @@ jobs:
       - save_cache:
           paths:
             - drew-server/vendor/bundle
-          key: v1-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
+          key: v2-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
 
       # Web-Client Deps
       - restore_cache:
           keys:
-            - v1-web-client-dependencies-{{ checksum "drew-web-client/package.json" }}
-            - v1-web-client-dependencies-
+            - v2-web-client-dependencies-{{ checksum "drew-web-client/yarn.lock" }}
+            - v2-web-client-dependencies-
       - run:
           name: Configure font-awesome dependencies
           command: |
-            npm config set "@fortawesome:registry" https://npm.fontawesome.com/
-            npm config set "//npm.fontawesome.com/:_authToken" $FAWESOME_KEY
+            yarn config set "@fortawesome:registry" https://npm.fontawesome.com/
+            yarn config set "//npm.fontawesome.com/:_authToken" $FAWESOME_KEY
           working_directory: ~/repo/drew-web-client
       - run:
           name: Web-Client dependencies
-          command: rm -rf node_modules && npm cache clean --force && npm install && yarn install
+          command: yarn install
           working_directory: ~/repo/drew-web-client
       - save_cache:
           paths:
             - drew-web-client/node_modules
-          key: v1-web-client-dependencies-{{ checksum "drew-web-client/package.json" }}
+          key: v2-web-client-dependencies-{{ checksum "drew-web-client/yarn.lock" }}
 
       # Save it to the workspace
       - persist_to_workspace:
@@ -126,7 +126,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: npm run ci:unit
+      - run: yarn run ci:unit
 
   server:
     docker:
@@ -269,9 +269,9 @@ jobs:
           name: Clean and build web-client for production
           working_directory: ~/repo/drew-web-client
           command: |
-            npm run build -- --mode production
+            yarn run build --mode production
 
       - run:
           name: Deploy web-client
           working_directory: ~/repo/drew-web-client
-          command: npm run deploy
+          command: yarn run deploy
