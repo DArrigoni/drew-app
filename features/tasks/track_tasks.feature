@@ -9,7 +9,7 @@ Feature: Manage Tasks
 
   Scenario: Start a task
     Given I have added the task "Fix the roof"
-    And I am on the task page
+    And I am on the tasks page
     When I start the task
     Then I should see the "Fix the roof" task is started
     When I go off and do some work then return
@@ -18,7 +18,7 @@ Feature: Manage Tasks
   Scenario: Stop a task
     Given I have added the task "Fix the roof"
     And the "Fix the roof" task has been started
-    And I am on the task page
+    And I am on the tasks page
     When I stop the task
     Then I should see the "Fix the roof" task is no longer started
     When I go off and do some work then return
@@ -28,7 +28,7 @@ Feature: Manage Tasks
     Given I have added the task "Fix the roof"
     And I have added the task "Research the nutrition"
     And the "Fix the roof" task has been started
-    And I am on the task page
+    And I am on the tasks page
     When I filter for started tasks
     Then I should see 1 task
     And I should not see a task for "Research the nutrition"

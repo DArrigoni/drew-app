@@ -31,7 +31,7 @@ Given(/^I have some mixed tasks$/) do
   load_fixture('mixed')
 end
 
-Given(/^I (?:am on|go to) the task page$/) do
+Given(/^I (?:am on|go to) the tasks page$/) do
   tasks_page.visit_page
 end
 
@@ -119,10 +119,6 @@ When(/^I clear the tag filter$/) do
   tasks_page.clear_task_filter
 end
 
-Then(/^I should see my tasks$/) do
-  expect(current_page).to have_task_count_of 5
-end
-
 Then(/^the first task should be "([^"]*)"$/) do |title|
   expect(tasks_page.tasks.first.title).to eq(title)
 end
@@ -131,18 +127,36 @@ When(/^I change the description to$/) do |description|
   task_page.set_description description
 end
 
-When (/^I go to the tasks page$/) do
+When(/^I go to the edit page for the first task$/) do
   tasks_page.visit_page
+  tasks_page.tasks.first.open_detail
+  task_page.start_edit
+  expect(task_page.title_has_focus?).to be true
 end
 
-Then(/^I should see (\d+)( done| started)? tasks?( on the dashboard| on the tasks page)?$/) do |count, qualifier, page|
+When(/^I add the "([^"]*)" tag$/) do |tag_name|
+  task_page.add_tag(tag_name)
+end
+
+Then(/^I should see ((\d+)|no|(my))( done| started)? tasks?( tagged as "([^"]*)")?( on the dashboard| on the tasks page)?$/) do |count, qualifier, tag_name, page|
   if page&.include?('dashboard')
     expect(dashboard_page).to be_current_page
   else
     expect(tasks_page).to be_current_page
   end
 
-  expect(current_page).to have_task_count_of count, qualifier
+  qualities = {}
+  qualities[qualifier] = true if qualifier.present?
+  qualities['tag'] = tag_name if tag_name.present?
+
+  count = 5 if count == 'my'
+
+  count = count.to_i
+  if count <= 0
+    expect(current_page).to have_no_tasks qualities
+  else
+    expect(current_page).to have_task_count_of count.to_i, qualities
+  end
 end
 
 Then(/^the form should be reset$/) do
@@ -175,10 +189,10 @@ Then(/^I should be ready to edit the task$/) do
   expect(task_page.title_has_focus?).to be true
 end
 
-Then(/^I should see (\d+) task(?:s)? tagged as "([^"]*)"$/) do |count, tag|
-  expect(tasks_page).to have_task_count_of(count, {tag: tag})
-end
-
 Then(/^I should see the description$/) do |description|
   expect(page.text).to include(description)
+end
+
+Then(/^I should see the "([^"]*)" tag$/) do |tag_name|
+  expect(task_page.tags).to include(tag_name)
 end
