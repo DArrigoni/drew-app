@@ -6,7 +6,7 @@ Feature: Manage Tasks
   Scenario: Read existing tasks
     Given I have some tasks
     And I have logged in
-    When I go to the task page
+    When I go to the tasks page
     Then I should see my tasks
     When I open the details of the first task
     Then I should see the first task's description
@@ -15,7 +15,7 @@ Feature: Manage Tasks
     Given there are no tasks
     And the user Bob exists
     And I have logged in
-    And I am on the task page
+    And I am on the tasks page
     When I add a task for "Do something!"
     Then I should see 1 task
     And the first task should be "Do something!"
@@ -26,15 +26,15 @@ Feature: Manage Tasks
   Scenario: Mark a task as done
     Given I have some tasks
     And I have logged in
-    And I am on the task page
+    And I am on the tasks page
     When I mark the first task as done
     Then I should see 4 tasks
 
   Scenario: Show done tasks
     Given I have some mixed tasks
     And I have logged in
-    When I go to the task page
-    Then I should see 0 done tasks
+    When I go to the tasks page
+    Then I should see no done tasks
     And I should see 3 tasks
     When I filter in done tasks
     Then I should see 3 done tasks

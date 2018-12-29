@@ -11,8 +11,8 @@ Feature: Log In
     When I click log in
     And I log in with the email "alice@alice.com" and password "Password123"
     Then I should see the dashboard
-    When I go to the task page
-    Then I should see 0 tasks
+    When I go to the tasks page
+    Then I should see no tasks
 
   Scenario: Log out
     Given the user Bob exists
@@ -21,5 +21,5 @@ Feature: Log In
     Then I should see the dashboard
     When I log out
     Then I should see the landing page
-    When I go to the task page
+    When I go to the tasks page
     Then I should see the landing page
