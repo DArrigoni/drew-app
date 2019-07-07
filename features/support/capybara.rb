@@ -1,10 +1,8 @@
 require 'capybara/cucumber'
-require 'chromedriver-helper'
+require 'webdrivers'
 
 Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome,
-    driver_opts: { log_path: 'out/chromedriver.out' }
-  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome)
 end
 
 Capybara.default_driver = :chrome
