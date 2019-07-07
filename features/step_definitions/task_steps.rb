@@ -138,6 +138,10 @@ When(/^I add the "([^"]*)" tag$/) do |tag_name|
   task_page.add_tag(tag_name)
 end
 
+When(/^I close the task detail view$/) do
+  task_page.close
+end
+
 Then(/^I should see ((\d+)|no|(my))( done| started)? tasks?( tagged as "([^"]*)")?( on the dashboard| on the tasks page)?$/) do |count, qualifier, tag_name, page|
   if page&.include?('dashboard')
     expect(dashboard_page).to be_current_page

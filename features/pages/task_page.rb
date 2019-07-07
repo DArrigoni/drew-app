@@ -13,6 +13,12 @@ class TaskPage < TestPage
     end
   end
 
+  def close
+    scoped do
+      find('#task__back').click
+    end
+  end
+
   def set_title task_title
     scoped do
       fill_in 'title', with: task_title

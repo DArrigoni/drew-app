@@ -37,6 +37,6 @@ Feature: Tag Tasks
     And I save my changes
     Then I should see the "Home" tag
     And I should see the "Phone" tag
-    When I go to the tasks page
+    When I close the task detail view
     Then I should see 1 task tagged as "Home"
     And I should see 1 task tagged as "Phone"
