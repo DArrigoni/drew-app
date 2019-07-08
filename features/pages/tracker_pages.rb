@@ -73,6 +73,24 @@ class TrackerPage < TestPage
     end
   end
 
+  def delete
+    scoped do
+      page.find('#tracker__delete').click
+    end
+  end
+
+  def cancel_delete
+    scoped do
+      page.find('#tracker_delete__cancel').click
+    end
+  end
+
+  def confirm_delete
+    scoped do
+      page.find('#tracker_delete__confirm').click
+    end
+  end
+
   private
 
   class TrackerRecordListitem < TestPageObject
@@ -160,5 +178,15 @@ RSpec::Matchers.define :have_tracker_record_count_of do |count, qualities|
     descriptor = TrackerPage.record_descriptor
 
     "Expected to find #{count} instances of #{descriptor}. Actually found #{actual_count} via #{selector}"
+  end
+end
+
+RSpec::Matchers.define :have_tracker_delete_warning_visible do
+  match do |_|
+    page.has_css?('#tracker_delete')
+  end
+
+  failure_message do |_|
+    "Tracker delete confirmation not open"
   end
 end

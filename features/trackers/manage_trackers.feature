@@ -27,3 +27,23 @@ Feature: Manage Daily Trackers
     When I add a tracker record
     Then I should see 1 tracker record
     And I should see a tracker record for today
+
+  Scenario: Delete an existing tracker with no exsiting records
+    Given I have a tracker named "Go to bed on time" with 0 records
+    And I am on the tracker page for "Go to bed on time"
+    When I delete the tracker
+    Then I should be on the trackers page
+    And I should see 0 trackers
+
+  Scenario: Delete an existing tracker with exsiting records
+    Given I have a tracker named "Go to bed on time" with 3 records
+    And I am on the tracker page for "Go to bed on time"
+    When I delete the tracker
+    Then I should see a warning about deleting records
+    When I cancel out of the tracker delete warning
+    Then I should be on the tracker page for "Go to bed on time"
+    And I should see 3 tracker records
+    When I delete the tracker
+    And I agree to the tracker delete warning
+    Then I should be on the trackers page
+    And I should see 0 trackers
