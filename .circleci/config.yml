@@ -58,8 +58,8 @@ jobs:
       # Root Deps
       - restore_cache:
           keys:
-          - v2-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
-          - v2-root-dependencies-
+          - v3-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+          - v3-root-dependencies-
       - run:
           name: Root Dependeinces
           command: |
@@ -69,13 +69,13 @@ jobs:
           paths:
             - node_modules
             - vendor/bundle
-          key: v2-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+          key: v3-root-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
 
       # Server Deps
       - restore_cache:
           keys:
-            - v2-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
-            - v2-server-dependencies-
+            - v3-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
+            - v3-server-dependencies-
       - run:
           name: Server Dependencies
           command: bundle install --jobs=4 --retry=3 --path vendor/bundle
@@ -83,13 +83,13 @@ jobs:
       - save_cache:
           paths:
             - drew-server/vendor/bundle
-          key: v2-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
+          key: v3-server-dependencies-{{ checksum "drew-server/Gemfile.lock" }}
 
       # Web-Client Deps
       - restore_cache:
           keys:
-            - v2-web-client-dependencies-{{ checksum "drew-web-client/yarn.lock" }}
-            - v2-web-client-dependencies-
+            - v3-web-client-dependencies-{{ checksum "drew-web-client/yarn.lock" }}
+            - v3-web-client-dependencies-
       - run:
           name: Configure font-awesome dependencies
           command: |
@@ -103,7 +103,7 @@ jobs:
       - save_cache:
           paths:
             - drew-web-client/node_modules
-          key: v2-web-client-dependencies-{{ checksum "drew-web-client/yarn.lock" }}
+          key: v3-web-client-dependencies-{{ checksum "drew-web-client/yarn.lock" }}
 
       # Save it to the workspace
       - persist_to_workspace:
