@@ -39,19 +39,15 @@ Given(/^I am on the dashboard page$/) do
   dashboard_page.visit_page
 end
 
-Given(/^the first task has been started$/) do
-  step('I start the first task')
-end
-
 Given(/^I have added the task "([^"]*)"$/) do |task_title|
   tasks_page.visit_page
   tasks_page.add_new_task(title: task_title)
   tasks_page.visit_page
 end
 
-Given(/^the "([^"]*)" task has been started$/) do |task_title|
+Given(/^the "([^"]*)" task has been focused$/) do |task_title|
   tasks_page.visit_page
-  tasks_page.task_for(task_title).start
+  tasks_page.task_for(task_title).focus
 end
 
 Given(/^I am on the details page for first task$/) do
@@ -71,28 +67,24 @@ When(/^I filter in done tasks$/) do
   tasks_page.toggle_show_done_filter
 end
 
-When(/^I filter for started tasks$/) do
-  tasks_page.enable_focus_started_tasks_filter
+When(/^I filter for focused tasks$/) do
+  tasks_page.enable_focused_tasks_filter
 end
 
-When(/^I reset the started filter for tasks$/) do
-  tasks_page.disable_focus_started_tasks_filter
-end
-
-When(/^I start the(?: first)? task$/) do
-  tasks_page.tasks.first.start
-end
-
-When(/^I start the "([^"]*)" task/) do |task_title|
-  tasks_page.task_for(task_title).start
-end
-
-When(/^I stop the(?: first)? task$/) do
-  tasks_page.tasks.first.stop
+When(/^I reset the focused filter for tasks$/) do
+  tasks_page.disable_focused_tasks_filter
 end
 
 When(/^I go off and do some work then return$/) do
   page.refresh
+end
+
+When(/^I focus the "([^"]*)" task$/) do |title|
+  tasks_page.task_for(title).focus
+end
+
+When(/^I unfocus the "([^"]*)" task$/) do |title|
+  tasks_page.task_for(title).unfocus
 end
 
 When(/^I open the details of the first task$/) do
@@ -142,7 +134,15 @@ When(/^I close the task detail view$/) do
   task_page.close
 end
 
-Then(/^I should see ((\d+)|no|(my))( done| started)? tasks?( tagged as "([^"]*)")?( on the dashboard| on the tasks page)?$/) do |count, qualifier, tag_name, page|
+When(/^I flag the "([^"]*)" task as focused$/) do |title|
+  tasks_page.task_for(title).focus
+end
+
+When(/^I remove the focus flag on the "([^"]*)" task$/) do |arg|
+  tasks_page.task_for(title).unfocus
+end
+
+Then(/^I should see ((\d+)|no|(my))( done| focused)? tasks?( tagged as "([^"]*)")?( on the dashboard| on the tasks page)?$/) do |count, qualifier, tag_name, page|
   if page&.include?('dashboard')
     expect(dashboard_page).to be_current_page
   else
@@ -167,13 +167,13 @@ Then(/^the form should be reset$/) do
   expect(tasks_page.new_task_input.value).to eq ''
 end
 
-Then(/^I should see the "([^"]*)" task is( no longer)? started$/) do |title, negation|
+Then(/^I should see the "([^"]*)" task is( no longer)? focused$/) do |title, negation|
   task_list_item = tasks_page.task_for(title)
 
   if negation.present?
-    expect(task_list_item).to_not be_started
+    expect(task_list_item).to_not be_focused
   else
-    expect(task_list_item).to be_started
+    expect(task_list_item).to be_focused
   end
 end
 
@@ -199,4 +199,13 @@ end
 
 Then(/^I should see the "([^"]*)" tag$/) do |tag_name|
   expect(task_page.tags).to include(tag_name)
+end
+
+Then(/^I should see the "([^"]*)" task is (first|last|\d+) on the list$/) do |title, posKey|
+  pos = case posKey
+        when 'first' then 0
+        when 'last' then (tasks_page.tasks.length - 1)
+        else posKey.to_i
+        end
+  expect(tasks_page.task_for(title).sort_order).to eq pos
 end

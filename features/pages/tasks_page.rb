@@ -52,7 +52,7 @@ class TasksPage < TestPage
 
   def tasks
     scoped do
-      find_all('li.task-list-item').map { |elem| TaskListItem.new(elem) }
+      find_all('li.task-list-item').map { |elem| TaskListItem.new(elem, self) }
     end
   end
 
@@ -72,15 +72,15 @@ class TasksPage < TestPage
     end
   end
 
-  def enable_focus_started_tasks_filter
+  def enable_focused_tasks_filter
     scoped do
-      check 'Focus started'
+      check 'Focused'
     end
   end
 
-  def disable_focus_started_tasks_filter
+  def disable_focused_tasks_filter
     scoped do
-      uncheck 'Focus started'
+      uncheck 'Focused'
     end
   end
 
@@ -103,8 +103,8 @@ class TasksPage < TestPage
       element.find('.title').text
     end
 
-    def started?
-      element.matches_css?('.started')
+    def focused?
+      element.matches_css?('.focused')
     end
 
     def tags
@@ -113,21 +113,25 @@ class TasksPage < TestPage
       end
     end
 
+    def sort_order
+      parent.tasks.index { |task| task.element == self.element}
+    end
+
     def mark_done
       scoped do
-        click_on 'Done'
+        find('button.mark-done').click
       end
     end
 
-    def start
+    def focus
       scoped do
-        click_on 'Start'
+        find('button.focus').click
       end
     end
 
-    def stop
+    def unfocus
       scoped do
-        click_on 'Stop'
+        find('button.unfocus').click
       end
     end
 
@@ -181,4 +185,3 @@ RSpec::Matchers.define :have_task_count_of do |count, qualities|
     "Expected to find #{count} instances of #{descriptor}. Actually found #{actual_count} via #{selector}"
   end
 end
-
