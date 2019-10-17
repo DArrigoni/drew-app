@@ -39,6 +39,18 @@ Feature: Track Tasks
     When I reset the focused filter for tasks
     Then I should see 2 tasks
 
+  @WIP
+  Scenario: Add a new focused task when in the focused context
+    Given I have added the task "Fix the roof"
+    And I have added the task "Research the nutrition"
+    And the "Fix the roof" task has been focused
+    And I am on the tasks page
+    And the focused filter is enabled
+    When I add a task for "Do something now!"
+    Then I should see 2 tasks
+    And I should see the "Do something now!" task is focused
+
+
   Scenario: See started tasks on the dashboard
     Given I have added the task "Fix the roof"
     And I have added the task "Research the nutrition"
