@@ -55,6 +55,10 @@ Given(/^I am on the details page for first task$/) do
   tasks_page.tasks.first.open_detail
 end
 
+Given(/^the focused filter is enabled$/) do
+  tasks_page.enable_focused_tasks_filter
+end
+
 When(/^I add a task for "([^"]*)"$/) do |task_title|
   tasks_page.add_new_task(title: task_title)
 end
