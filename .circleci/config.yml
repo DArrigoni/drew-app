@@ -39,9 +39,11 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: pguser_test
+          PGPASSWORD: password1234
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_USER: pguser_test
+          POSTGRES_PASSWORD: password1234
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo
 
@@ -118,9 +120,11 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: pguser_test
+          PGPASSWORD: password1234
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_USER: pguser_test
+          POSTGRES_PASSWORD: password1234
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-web-client
     steps:
@@ -135,9 +139,11 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: pguser_test
+          PGPASSWORD: password1234
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_USER: pguser_test
+          POSTGRES_PASSWORD: password1234
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo/drew-server
 
@@ -179,9 +185,11 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: pguser_test
+          PGPASSWORD: password1234
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_USER: pguser_test
+          POSTGRES_PASSWORD: password1234
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo
 
@@ -242,9 +250,11 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: pguser_test
+          PGPASSWORD: password1234
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_USER: pguser_test
+          POSTGRES_PASSWORD: password1234
           POSTGRES_DB: drew-app_test
     working_directory: ~/repo
 
